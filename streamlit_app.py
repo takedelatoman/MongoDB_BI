@@ -55,11 +55,7 @@ def get_data():
 # Mostrar tabla de datos
 df = get_data()
 if not df.empty:
-    if hasattr(st, 'experimental_data_editor'):
-        edited_df = st.experimental_data_editor(df, height=300)
-    else:
-        st.write("La función data_editor no está disponible en esta versión de Streamlit.")
-        edited_df = None
+    edited_df = st.data_editor(df, height=300)
 else:
     st.write("No data found in the database.")
 
@@ -75,9 +71,8 @@ if not df.empty:
 
 # Actualizar datos en MongoDB
 if edited_df is not None and not edited_df.equals(df):
-    for i in range(len(edited_df)):
-        row_id = edited_df.at[i, '_id']
-        for col in edited_df.columns:
-            if edited_df.at[i, col] != df.at[i, col]:
-                collection_accomodations.update_one({'_id': ObjectId(row_id)},
-                                                    {"$set": {col: edited_df.at[i, col]}})
+    edited_rows = st.session_state.get('data_editor_edited_rows', {})
+    for row_idx, changes in edited_rows.items():
+        row_id = edited_df.at[row_idx, '_id']
+        update_dict = {col: value for col, value in changes.items()}
+        collection_accomodations.update_one({'_id': ObjectId(row_id)}, {"$set": update_dict})
