@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import pymongo
 from bson.objectid import ObjectId
 import os
@@ -55,7 +54,10 @@ def get_data():
 # Mostrar tabla de datos
 df = get_data()
 if not df.empty:
-    edited_df = st.data_editor(df, height=300)
+    try:
+        edited_df = st.data_editor(df, height=300)
+    except Exception as e:
+        st.write(f"Error using data_editor: {e}")
 else:
     st.write("No data found in the database.")
 
@@ -70,7 +72,7 @@ if not df.empty:
     st.plotly_chart(scatter_fig)
 
 # Actualizar datos en MongoDB
-if edited_df is not None and not edited_df.equals(df):
+if 'edited_df' in locals() and not edited_df.empty and not edited_df.equals(df):
     edited_rows = st.session_state.get('data_editor_edited_rows', {})
     for row_idx, changes in edited_rows.items():
         row_id = edited_df.at[row_idx, '_id']
