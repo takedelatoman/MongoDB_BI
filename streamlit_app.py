@@ -55,23 +55,28 @@ def get_data():
 # Mostrar tabla de datos
 df = get_data()
 if not df.empty:
-    if hasattr(st, 'experimental_data_editor'):
-        edited_df = st.experimental_data_editor(df, height=300)
-    else:
-        st.write("La función data_editor no está disponible en esta versión de Streamlit.")
-        edited_df = None
+    edited_df = st.experimental_data_editor(df, height=300)
 else:
     st.write("No data found in the database.")
 
 # Graficos
 if not df.empty:
-    pie_fig = px.pie(df, names='stars', title='Distribución de Estrellas')
-    bar_fig = px.bar(df, x='company', y='stars', title='Estrellas por Compañía')
-    scatter_fig = px.scatter(df, x='coordinates', y='stars', title='Coordenadas vs Estrellas')
-
-    st.plotly_chart(pie_fig)
-    st.plotly_chart(bar_fig)
-    st.plotly_chart(scatter_fig)
+    st.markdown("<h3 style='text-align: center;'>Gráficos</h3>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 6, 1])
+    with col2:
+        pie_fig = px.pie(df, names='stars', title='Distribución de Estrellas')
+        st.plotly_chart(pie_fig, use_container_width=True)
+    
+    col1, col2, col3 = st.columns([1, 6, 1])
+    with col2:
+        bar_fig = px.bar(df, x='company', y='stars', title='Estrellas por Compañía')
+        st.plotly_chart(bar_fig, use_container_width=True)
+    
+    col1, col2, col3 = st.columns([1, 6, 1])
+    with col2:
+        scatter_fig = px.scatter(df, x='coordinates', y='stars', title='Coordenadas vs Estrellas')
+        st.plotly_chart(scatter_fig, use_container_width=True)
 
 # Actualizar datos en MongoDB
 if edited_df is not None and not edited_df.equals(df):
