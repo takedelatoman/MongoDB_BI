@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 import pymongo
 from bson.objectid import ObjectId
 import os
@@ -54,10 +55,11 @@ def get_data():
 # Mostrar tabla de datos
 df = get_data()
 if not df.empty:
-    try:
-        edited_df = st.data_editor(df, height=300)
-    except Exception as e:
-        st.write(f"Error using data_editor: {e}")
+    if hasattr(st, 'experimental_data_editor'):
+        edited_df = st.experimental_data_editor(df, height=300)
+    else:
+        st.write("La función data_editor no está disponible en esta versión de Streamlit.")
+        edited_df = None
 else:
     st.write("No data found in the database.")
 
@@ -72,9 +74,10 @@ if not df.empty:
     st.plotly_chart(scatter_fig)
 
 # Actualizar datos en MongoDB
-if 'edited_df' in locals() and not edited_df.empty and not edited_df.equals(df):
-    edited_rows = st.session_state.get('data_editor_edited_rows', {})
-    for row_idx, changes in edited_rows.items():
-        row_id = edited_df.at[row_idx, '_id']
-        update_dict = {col: value for col, value in changes.items()}
-        collection_accomodations.update_one({'_id': ObjectId(row_id)}, {"$set": update_dict})
+if edited_df is not None and not edited_df.equals(df):
+    for i in range(len(edited_df)):
+        row_id = edited_df.at[i, '_id']
+        for col in edited_df.columns:
+            if edited_df.at[i, col] != df.at[i, col]:
+                collection_accomodations.update_one({'_id': ObjectId(row_id)},
+                                                    {"$set": {col: edited_df.at[i, col]}})
