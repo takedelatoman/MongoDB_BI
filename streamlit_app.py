@@ -55,7 +55,11 @@ def get_data():
 # Mostrar tabla de datos
 df = get_data()
 if not df.empty:
-    edited_df = st.data_editor(df, height=300)
+    if hasattr(st, 'experimental_data_editor'):
+        edited_df = st.experimental_data_editor(df, height=300)
+    else:
+        st.write("La función data_editor no está disponible en esta versión de Streamlit.")
+        edited_df = None
 else:
     st.write("No data found in the database.")
 
