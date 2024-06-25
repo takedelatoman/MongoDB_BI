@@ -41,16 +41,16 @@ def initialize_database():
         cur.execute('''
             INSERT INTO denuncias (texto, fecha, idUnidadEducativa, imageUrl)
             VALUES 
-                ('Denuncia por acoso escolar', '2024-06-01', 101, 'https://example.com/image1.jpg'),
-                ('Denuncia por falta de infraestructura', '2024-06-02', 102, 'https://example.com/image2.jpg'),
-                ('Denuncia por violencia física', '2024-06-03', 103, 'https://example.com/image3.jpg'),
-                ('Denuncia por falta de maestros', '2024-06-04', 104, 'https://example.com/image4.jpg'),
-                ('Denuncia por robo de materiales', '2024-06-05', 105, 'https://example.com/image5.jpg'),
-                ('Denuncia por discriminación', '2024-06-06', 106, 'https://example.com/image6.jpg'),
-                ('Denuncia por falta de agua potable', '2024-06-07', 107, 'https://example.com/image7.jpg'),
-                ('Denuncia por maltrato verbal', '2024-06-08', 108, 'https://example.com/image8.jpg'),
-                ('Denuncia por falta de electricidad', '2024-06-09', 109, 'https://example.com/image9.jpg'),
-                ('Denuncia por falta de seguridad', '2024-06-10', 110, 'https://example.com/image10.jpg')
+                ('Denuncia por acoso escolar', '2024-06-01', 1, 'https://example.com/image1.jpg'),
+                ('Denuncia por falta de infraestructura', '2024-06-02', 2, 'https://example.com/image2.jpg'),
+                ('Denuncia por violencia física', '2024-06-03', 3, 'https://example.com/image3.jpg'),
+                ('Denuncia por falta de maestros', '2024-06-04', 4, 'https://example.com/image4.jpg'),
+                ('Denuncia por robo de materiales', '2024-06-05', 5, 'https://example.com/image5.jpg'),
+                ('Denuncia por discriminación', '2024-06-06', 1, 'https://example.com/image6.jpg'),
+                ('Denuncia por falta de agua potable', '2024-06-07', 2, 'https://example.com/image7.jpg'),
+                ('Denuncia por maltrato verbal', '2024-06-08', 3, 'https://example.com/image8.jpg'),
+                ('Denuncia por falta de electricidad', '2024-06-09', 4, 'https://example.com/image9.jpg'),
+                ('Denuncia por falta de seguridad', '2024-06-10', 5, 'https://example.com/image10.jpg')
         ''')
     
     conn.commit()
