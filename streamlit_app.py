@@ -5,7 +5,7 @@ import psycopg2
 import os
 
 # Conectar a la base de datos PostgreSQL
-def get_postgresql_data():
+def get_postgresql_connection():
     conn = psycopg2.connect(
         host="c6sfjnr30ch74e.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com",
         database="da8p7polirg7h2",
@@ -13,13 +13,62 @@ def get_postgresql_data():
         password="pcb9b07ba2a78907a722c43201a6cb07868a940796b411f44157294af525a00ce",
         port="5432"
     )
+    return conn
+
+def initialize_database():
+    conn = get_postgresql_connection()
+    cur = conn.cursor()
+    
+    # Eliminar la tabla si ya existe
+    cur.execute('DROP TABLE IF EXISTS denuncias')
+    
+    # Crear la tabla
+    cur.execute('''
+        CREATE TABLE denuncias (
+            id SERIAL PRIMARY KEY,
+            texto TEXT,
+            fecha DATE,
+            idUnidadEducativa INT,
+            imageUrl TEXT
+        )
+    ''')
+    
+    # Insertar datos de ejemplo si la tabla está vacía
+    cur.execute('SELECT COUNT(*) FROM denuncias')
+    count = cur.fetchone()[0]
+    
+    if count == 0:
+        cur.execute('''
+            INSERT INTO denuncias (texto, fecha, idUnidadEducativa, imageUrl)
+            VALUES 
+                ('Denuncia por acoso escolar', '2024-06-01', 101, 'https://example.com/image1.jpg'),
+                ('Denuncia por falta de infraestructura', '2024-06-02', 102, 'https://example.com/image2.jpg'),
+                ('Denuncia por violencia física', '2024-06-03', 103, 'https://example.com/image3.jpg'),
+                ('Denuncia por falta de maestros', '2024-06-04', 104, 'https://example.com/image4.jpg'),
+                ('Denuncia por robo de materiales', '2024-06-05', 105, 'https://example.com/image5.jpg'),
+                ('Denuncia por discriminación', '2024-06-06', 106, 'https://example.com/image6.jpg'),
+                ('Denuncia por falta de agua potable', '2024-06-07', 107, 'https://example.com/image7.jpg'),
+                ('Denuncia por maltrato verbal', '2024-06-08', 108, 'https://example.com/image8.jpg'),
+                ('Denuncia por falta de electricidad', '2024-06-09', 109, 'https://example.com/image9.jpg'),
+                ('Denuncia por falta de seguridad', '2024-06-10', 110, 'https://example.com/image10.jpg')
+        ''')
+    
+    conn.commit()
+    cur.close()
+    conn.close()
+
+def get_postgresql_data():
+    conn = get_postgresql_connection()
     query = "SELECT * FROM denuncias"
     df = pd.read_sql(query, conn)
     conn.close()
     return df
 
+# Inicializar la base de datos
+initialize_database()
+
 # Crear la aplicación Streamlit
-st.set_page_config(layout="wide", page_title="'URPI TOURS'")
+st.set_page_config(layout="wide", page_title="'DISTRITO 7'")
 
 # Obtener la ruta de la imagen del logo
 LOGO_PATH = os.path.join("assets", "denuncia.jpg")
@@ -43,6 +92,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 # Logo en la parte superior izquierda
 col1, col2, col3 = st.columns([1, 6, 2])  # Ajusta los anchos de las columnas según sea necesario
 with col1:
@@ -66,12 +116,12 @@ if not df.empty:
     
     col1, col2, col3 = st.columns([1, 6, 1])
     with col2:
-        pie_fig = px.pie(df, names='idUnidadEducativa', title='Distribución por Unidad Educativa')
+        pie_fig = px.pie(df, names='idunidadeducativa', title='Distribución por Unidad Educativa')
         st.plotly_chart(pie_fig, use_container_width=True)
     
     col1, col2, col3 = st.columns([1, 6, 1])
     with col2:
-        bar_fig = px.bar(df, x='id', y='idUnidadEducativa', title='Denuncias por ID y Unidad Educativa')
+        bar_fig = px.bar(df, x='id', y='idunidadeducativa', title='Denuncias por ID y Unidad Educativa')
         st.plotly_chart(bar_fig, use_container_width=True)
     
     col1, col2, col3 = st.columns([1, 6, 1])
