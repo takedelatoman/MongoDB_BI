@@ -116,12 +116,12 @@ if not df.empty:
     
     col1, col2, col3 = st.columns([1, 6, 1])
     with col2:
-        pie_fig = px.pie(df, names='idUnidadEducativa', title='Distribución por Unidad Educativa')
+        pie_fig = px.pie(df, names='idunidadeducativa', title='Distribución por Unidad Educativa')
         st.plotly_chart(pie_fig, use_container_width=True)
     
     col1, col2, col3 = st.columns([1, 6, 1])
     with col2:
-        bar_fig = px.bar(df, x='id', y='idUnidadEducativa', title='Denuncias por ID y Unidad Educativa')
+        bar_fig = px.bar(df, x='id', y='idunidadeducativa', title='Denuncias por ID y Unidad Educativa')
         st.plotly_chart(bar_fig, use_container_width=True)
     
     col1, col2, col3 = st.columns([1, 6, 1])
