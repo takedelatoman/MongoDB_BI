@@ -80,6 +80,9 @@ def load_data():
 
 df = load_data()
 
+# Imprimir las columnas del DataFrame para depuración
+st.write("Columnas del DataFrame:", df.columns)
+
 # Estilos
 st.markdown(
     """
